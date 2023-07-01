@@ -1,0 +1,18 @@
+{
+    "name": "HyperCasualLab.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9f400922374954ec899da1a6c12a2404"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
