@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -34,11 +34,12 @@ public class Player : MonoBehaviour
     FriendlyController friendlyController;
     private GameObject enemyObject;
 
+    public Action OnGetCoin;
+
     // Start is called before the first frame update
     void Start()
     {
         forwardHitNotifier.OnHit += ForwardHit;
-        GameStart();
     }
 
     // Update is called once per frame
@@ -142,10 +143,15 @@ public class Player : MonoBehaviour
             enemyObject = other;
             charactorState = CharactorState.Attack;
         }
+        if(tagName == "Coin")
+        {
+            Destroy(other);
+            OnGetCoin?.Invoke();
+        }
     }
 
-    private void GameStart()
+    public void SetCharactorState(CharactorState state)
     {
-        charactorState = CharactorState.Run;
+        charactorState = state;
     }
 }
