@@ -3,36 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[Serializable]
-public class Friendly
-{
-    public GameObject Charactor;
-    public Animator animator;
-    public CharactorState CharactorState;
-    private string playAnimationName;
-
-    public void SetAnimation(string name, AnimationType animationType)
-    {
-        switch (animationType)
-        {
-            case AnimationType.Bool:
-                animator.SetBool(playAnimationName, false);
-                animator.SetBool(name, true);
-                playAnimationName = name;
-                break;
-            case AnimationType.Trigger:
-                animator.SetBool(playAnimationName, false);
-                animator.SetTrigger(name);
-                break;
-        }
-    }
-}
-
 public class FriendlyController : MonoBehaviour
 {
     [SerializeField]
     Transform playerPos;
-    public List<Friendly> Friendlies = new List<Friendly>();
+    public List<GameObject> Friendlies = new List<GameObject>();
     private int friendliesCount = 0;
 
 
@@ -40,20 +15,20 @@ public class FriendlyController : MonoBehaviour
     {
         Friendlies.ForEach(friend =>
         {
-            friend.SetAnimation(name, animationType);
+            friend.GetComponent<Charactor>().SetAnimation(name, animationType);
         });
     }
 
     public void AddFriend()
     {
-        Friendlies[friendliesCount].Charactor.SetActive(true);
+        Friendlies[friendliesCount].gameObject.SetActive(true);
         friendliesCount++;
     }
 
     public void RemoveFriend()
     {
         friendliesCount--;
-        Friendlies[friendliesCount].Charactor.SetActive(false);
+        Friendlies[friendliesCount].gameObject.SetActive(false);
         //TODO 先頭のキャラをPlayerPosへ移動させる
     }
 }

@@ -101,7 +101,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            StartCoroutine(enemy.Dead());
+            enemy.Dead();
             yield return new WaitForSeconds(2.0f);
             charactorState = CharactorState.Run;
         }
