@@ -4854,7 +4854,7 @@ GameObject:
   - component: {fileID: 1070656341314776833}
   - component: {fileID: 7297202167154047499}
   m_Layer: 0
-  m_Name: Trigger
+  m_Name: HitTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4950,7 +4950,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 683abd4c3b4ad40e2b268168f64d0cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tagName: Player
 --- !u!54 &7297202167154047499
 Rigidbody:
   m_ObjectHideFlags: 0

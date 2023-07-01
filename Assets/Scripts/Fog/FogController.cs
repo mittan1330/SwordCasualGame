@@ -25,13 +25,14 @@ public class FogController : MonoBehaviour
             var fog = Instantiate(GroundFog, GenerateTransform);
             fog.transform.position = new Vector3(0, 0, step * intervalPosition);
             GroundFogs.Add(fog);
-            fog.GetComponent<GroundFog>().hitNotifier.OnHitPlayer += UpdateFogPositions;
+            fog.GetComponent<GroundFog>().hitNotifier.OnHit += UpdateFogPositions;
         }
     }
 
 
-    void UpdateFogPositions()
+    void UpdateFogPositions(string tagName)
     {
+        if (tagName != "Player") return;
         var pos = new Vector3(0, 0, step * intervalPosition);
         GroundFogs[(int)(step % generateFogListCount)].transform.position = pos;
         step++;

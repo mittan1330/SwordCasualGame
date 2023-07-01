@@ -5,7 +5,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    float playerSpeed = 10.0f;
+    float playerForwardSpeed = 8.0f;
+    [SerializeField]
+    float playerSidewaysSpeed = 5.0f;
+    [SerializeField]
+    float stageWidth = 3.0f;
+    [SerializeField]
+    FloatingJoystick joystick;
     [SerializeField]
     Animator animator;
     [SerializeField]
@@ -13,11 +19,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform weaponPos;
 
+    [SerializeField]
+    private HitNotifier forwardHitNotifier;
 
     // Start is called before the first frame update
     void Start()
     {
         charactorState = CharactorState.Run;
+        forwardHitNotifier.OnHit += ForwardHit;
     }
 
     // Update is called once per frame
@@ -30,6 +39,26 @@ public class Player : MonoBehaviour
                 break;
 
         }
-        transform.Translate(0, 0, playerSpeed * Time.deltaTime);
+
+
+        transform.Translate(0, 0, playerForwardSpeed * Time.deltaTime);
+        var sideMoveSpeed = playerSidewaysSpeed * Time.deltaTime * joystick.Horizontal;
+        if(this.transform.position.x >= stageWidth)
+        {
+            sideMoveSpeed = sideMoveSpeed > 0 ? 0 : sideMoveSpeed;
+        }
+        else if (this.transform.position.x <= -stageWidth)
+        {
+            sideMoveSpeed = sideMoveSpeed < 0 ? 0 : sideMoveSpeed;
+        }
+        transform.Translate(sideMoveSpeed, 0, 0);
+    }
+
+    private void ForwardHit(string tagName)
+    {
+        if(tagName == "Friendly")
+        {
+            Debug.Log("????????");
+        }
     }
 }

@@ -5,16 +5,10 @@ using System;
 
 public class HitNotifier : MonoBehaviour
 {
-    [SerializeField]
-    string tagName = "";
-    public Action OnHitPlayer;
-
+    public Action<string> OnHit;
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == tagName)
-        {
-            OnHitPlayer?.Invoke();
-        }
+        OnHit?.Invoke(other.tag);
     }
 }
