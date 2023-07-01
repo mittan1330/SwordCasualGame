@@ -6,7 +6,7 @@ using System;
 public class FriendlyController : MonoBehaviour
 {
     [SerializeField]
-    Transform playerPos;
+    Player player;
     public List<Transform> Positions = new List<Transform>(5);
     public List<Charactor> Friendlies = new List<Charactor>();
 
@@ -14,8 +14,33 @@ public class FriendlyController : MonoBehaviour
     Charactor friendPrefab;
     [SerializeField]
     Vector3 pivot;
+    [SerializeField]
+    float interval;
     private int friendliesCount = 0;
 
+
+    private void FixedUpdate()
+    {
+        if (player.charactorState == CharactorState.Run)
+        {
+            transform.Translate(0, 0, player.playerForwardSpeed * Time.fixedDeltaTime);
+            var pos = Positions[0].transform.position;
+            pos.z = player.transform.position.z + interval;
+            Positions[0].transform.position = pos;
+            float posX = 0;
+
+            if(Positions[0].position.x + 0.1f < player.transform.position.x)
+            {
+                posX = Time.fixedDeltaTime * 3;
+            }
+            if (Positions[0].position.x - 0.1f > player.transform.position.x)
+            {
+                posX = Time.fixedDeltaTime * -3;
+            }
+            //posX = Positions[0].position.x < player.transform.position.x ? Time.deltaTime * 5 : 0;
+            Positions[0].position += new Vector3(posX, 0, 0);
+        }
+    }
 
     public void SetAnimationForAll(string name, AnimationType animationType)
     {
@@ -28,7 +53,8 @@ public class FriendlyController : MonoBehaviour
     public void AddFriend(int power)
     {
         var friend = Instantiate(friendPrefab, Positions[friendliesCount]) as Charactor;
-        friend.transform.position += pivot * 2;
+        var pos = friend.transform.localPosition;
+        friend.transform.localPosition = new Vector3(pos.x,0, pos.z);
         friend.Power.Value = power;
         Friendlies.Add(friend);
         friendliesCount++;
@@ -44,7 +70,9 @@ public class FriendlyController : MonoBehaviour
         {
             friend.transform.SetParent(Positions[index]);
             friend.transform.localPosition = new Vector3(0, 0, 0);
-            friend.transform.position += pivot;
+            //var pos = friend.transform.position;
+            //friend.transform.position += pivot;
+            friend.transform.localPosition = new Vector3(0, 0, 0);
             index++;
         });
         return charactor;

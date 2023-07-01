@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     private float stageLength;
     [SerializeField]
     private Player player;
+    [SerializeField]
+    private Enemy boss;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +39,7 @@ public class GameManager : MonoBehaviour
         player.OnGetCoin += AddCoin;
         player.OnEnemyKill += AddEnemyCount;
         player.OnGameOver += GameOver;
+        boss.OnDeadBoss += GameClear;
         GameStart();
     }
 
@@ -82,6 +85,6 @@ public class GameManager : MonoBehaviour
     IEnumerator GameClearCoroutine()
     {
         yield return new WaitForSeconds(1.0f);
-        gameOverResult.OnGameEnd(coinCount.Value, enemyCount.Value);
+        gameClearResult.OnGameEnd(coinCount.Value, enemyCount.Value);
     }
 }

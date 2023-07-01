@@ -8,8 +8,7 @@ public class Player : MonoBehaviour
     private int remainEnemyHp;
     bool attackSequence = false;
 
-    [SerializeField]
-    float playerForwardSpeed = 8.0f;
+    public float playerForwardSpeed = 8.0f;
     [SerializeField]
     float playerSidewaysSpeed = 5.0f;
 
@@ -23,8 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform mainCharactorTransform;
 
-    [SerializeField]
-    CharactorState charactorState;
+    public CharactorState charactorState;
     [SerializeField]
     Transform weaponPos;
 
@@ -45,7 +43,7 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         switch (charactorState)
         {
@@ -53,8 +51,8 @@ public class Player : MonoBehaviour
                 // Playerの移動制御
                 mainCharactor.SetAnimation("Run", AnimationType.Bool);
 
-                transform.Translate(0, 0, playerForwardSpeed * Time.deltaTime);
-                var sideMoveSpeed = playerSidewaysSpeed * Time.deltaTime * joystick.Horizontal;
+                transform.Translate(0, 0, playerForwardSpeed * Time.fixedDeltaTime);
+                var sideMoveSpeed = playerSidewaysSpeed * Time.fixedDeltaTime * joystick.Horizontal;
                 if (this.transform.position.x >= stageWidth)
                 {
                     sideMoveSpeed = sideMoveSpeed > 0 ? 0 : sideMoveSpeed;

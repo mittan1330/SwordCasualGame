@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Enemy : MonoBehaviour
 {
-
-
     [SerializeField]
     Charactor charactor;
     public bool isBoss = false;
+
+    public Action OnDeadBoss;
 
     public int GetDamage(int value)
     {
@@ -21,5 +22,6 @@ public class Enemy : MonoBehaviour
     public void Dead()
     {
         StartCoroutine(charactor.Dead());
+        if (isBoss) OnDeadBoss?.Invoke();
     }
 }
