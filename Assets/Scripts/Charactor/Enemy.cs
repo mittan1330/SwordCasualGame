@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     Charactor charactor;
-
+    public bool isBoss = false;
 
     public int GetDamage(int value)
     {

@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Text EnemyCountText;
     public ReactiveProperty<int> enemyCount;
+    // UI sets
+    [SerializeField]
+    Result gameOverResult;
+    [SerializeField]
+    Result gameClearResult;
 
     // Game Objects
     [SerializeField]
@@ -31,6 +36,7 @@ public class GameManager : MonoBehaviour
 
         player.OnGetCoin += AddCoin;
         player.OnEnemyKill += AddEnemyCount;
+        player.OnGameOver += GameOver;
         GameStart();
     }
 
@@ -55,5 +61,27 @@ public class GameManager : MonoBehaviour
     void AddEnemyCount()
     {
         enemyCount.Value += 1;
+    }
+
+    void GameOver()
+    {
+        StartCoroutine(GameOverCoroutine());
+    }
+
+    IEnumerator GameOverCoroutine()
+    {
+        yield return new WaitForSeconds(1.0f);
+        gameOverResult.OnGameEnd(coinCount.Value, enemyCount.Value);
+    }
+
+    void GameClear()
+    {
+        StartCoroutine(GameClearCoroutine());
+    }
+
+    IEnumerator GameClearCoroutine()
+    {
+        yield return new WaitForSeconds(1.0f);
+        gameOverResult.OnGameEnd(coinCount.Value, enemyCount.Value);
     }
 }
