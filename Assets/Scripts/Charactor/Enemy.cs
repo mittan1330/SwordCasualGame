@@ -6,22 +6,16 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour
 {
 
-    public int Power = 1;
+
     [SerializeField]
     Charactor charactor;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        charactor.powerText.text = Power.ToString();
-    }
 
     public int GetDamage(int value)
     {
-        Power -= value;
-        charactor.powerText.text = Power.ToString();
-        if (Power > 0) Dead();
-        return Power > 0 ? Power : 0;
+        charactor.Power.Value -= value;
+        if (charactor.Power.Value <= 0) Dead();
+        return charactor.Power.Value > 0 ? charactor.Power.Value : 0;
     }
 
     public void Dead()

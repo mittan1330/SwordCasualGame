@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Player : MonoBehaviour
 {
-    public int PlayerPower = 1;
     private int remainEnemyHp;
     bool attackSequence = false;
 
@@ -19,7 +19,10 @@ public class Player : MonoBehaviour
     FloatingJoystick joystick;
 
     [SerializeField]
-    Animator animator;
+    Charactor mainCharactor;
+    [SerializeField]
+    Transform mainCharactorTransform;
+
     [SerializeField]
     CharactorState charactorState;
     [SerializeField]
@@ -45,7 +48,8 @@ public class Player : MonoBehaviour
         {
             case CharactorState.Run:
                 // Playerの移動制御
-                animator.SetBool("Run", true);
+                mainCharactor.SetAnimation("Run", AnimationType.Bool);
+
                 transform.Translate(0, 0, playerForwardSpeed * Time.deltaTime);
                 var sideMoveSpeed = playerSidewaysSpeed * Time.deltaTime * joystick.Horizontal;
                 if (this.transform.position.x >= stageWidth)
@@ -70,8 +74,8 @@ public class Player : MonoBehaviour
                 {
                     // Friendの移動制御
                     friendlyController.SetAnimationForAll("Idol", AnimationType.Bool);
-                    animator.SetBool("Run", false);
-                    animator.SetBool("Idol", true);
+                    mainCharactor.SetAnimation("Idol", AnimationType.Bool);
+
                     attackSequence = false;
 
                     StartCoroutine(AttackSequence());
@@ -84,26 +88,39 @@ public class Player : MonoBehaviour
 
     IEnumerator AttackSequence()
     {
-        animator.SetTrigger("Attack");
-        var enemy = enemyObject.GetComponent<Enemy>();
-        remainEnemyHp = enemy.GetDamage(PlayerPower);
+        while (mainCharactor != null)
+        {
+            mainCharactor.SetAnimation("Attack", AnimationType.Trigger);
 
-        if(remainEnemyHp > 0)
-        {
-            Debug.Log("Player Dead");
-            animator.SetTrigger("Dead");
-            animator.SetBool("Idol", false);
-            // Friendから1人移動させる
-            yield return new WaitForSeconds(1.0f);
-            // 雲を出す
-            animator.SetBool("Idol", true);
-            friendlyController.RemoveFriend();
-        }
-        else
-        {
-            enemy.Dead();
-            yield return new WaitForSeconds(2.0f);
-            charactorState = CharactorState.Run;
+            var enemy = enemyObject.GetComponent<Enemy>();
+            remainEnemyHp = enemy.GetDamage(mainCharactor.Power.Value);
+
+            if (remainEnemyHp > 0)
+            {
+                StartCoroutine(mainCharactor.Dead());
+                yield return new WaitForSeconds(1.2f);
+
+                if(friendlyController.Friendlies.Count <= 0)
+                {
+                    Debug.Log("GameOver");
+                    yield return null;
+                    break;
+                }
+
+                mainCharactor = friendlyController.SetMainCharactor();
+                mainCharactor.transform.SetParent(mainCharactorTransform);
+                mainCharactor.transform.localPosition = new Vector3(0, 0, 0);
+                // TODO 将来的にDOTWEENさせたい
+                //mainCharactor.transform.DOMove(new Vector3(0, 0, 0), 1).SetRelative(true);
+                yield return new WaitForSeconds(1.0f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(2.0f);
+                charactorState = CharactorState.Run;
+                break;
+            }
+
         }
         yield return null;
     }
@@ -114,8 +131,9 @@ public class Player : MonoBehaviour
         if(tagName == "Friendly")
         {
             Debug.Log("仲間を見つけた！");
+            int power = other.GetComponent<FriendlyStand>().charactor.Power.Value;
             Destroy(other);
-            friendlyController.AddFriend();
+            friendlyController.AddFriend(power);
         }
         if (tagName == "Enemy")
         {

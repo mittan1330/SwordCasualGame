@@ -7,7 +7,13 @@ public class FriendlyController : MonoBehaviour
 {
     [SerializeField]
     Transform playerPos;
-    public List<GameObject> Friendlies = new List<GameObject>();
+    public List<Transform> Positions = new List<Transform>(5);
+    public List<Charactor> Friendlies = new List<Charactor>();
+
+    [SerializeField]
+    Charactor friendPrefab;
+    [SerializeField]
+    Vector3 pivot;
     private int friendliesCount = 0;
 
 
@@ -15,14 +21,33 @@ public class FriendlyController : MonoBehaviour
     {
         Friendlies.ForEach(friend =>
         {
-            friend.GetComponent<Charactor>().SetAnimation(name, animationType);
+            friend.SetAnimation(name, animationType);
         });
     }
 
-    public void AddFriend()
+    public void AddFriend(int power)
     {
-        Friendlies[friendliesCount].gameObject.SetActive(true);
+        var friend = Instantiate(friendPrefab, Positions[friendliesCount]) as Charactor;
+        friend.transform.position += pivot * 2;
+        friend.Power.Value = power;
+        Friendlies.Add(friend);
         friendliesCount++;
+    }
+
+    public Charactor SetMainCharactor()
+    {
+        Charactor charactor = Friendlies[0];
+        Friendlies.RemoveAt(0);
+
+        int index = 0;
+        Friendlies.ForEach(friend =>
+        {
+            friend.transform.SetParent(Positions[index]);
+            friend.transform.localPosition = new Vector3(0, 0, 0);
+            friend.transform.position += pivot;
+            index++;
+        });
+        return charactor;
     }
 
     public void RemoveFriend()
