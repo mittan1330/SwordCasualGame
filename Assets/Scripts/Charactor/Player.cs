@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     private GameObject enemyObject;
 
     public Action OnGetCoin;
+    public Action OnEnemyKill;
 
     // Start is called before the first frame update
     void Start()
@@ -117,6 +118,7 @@ public class Player : MonoBehaviour
             }
             else
             {
+                OnEnemyKill?.Invoke();
                 yield return new WaitForSeconds(2.0f);
                 charactorState = CharactorState.Run;
                 break;

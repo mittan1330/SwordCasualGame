@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Text CoinCountText;
     public ReactiveProperty<int> coinCount;
+    [SerializeField]
+    private Text EnemyCountText;
+    public ReactiveProperty<int> enemyCount;
 
     // Game Objects
     [SerializeField]
@@ -23,26 +26,34 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         StageRemainingSlider.maxValue = stageLength;
-        StageRemainingSlider.value = stageLength;
         coinCount.Subscribe(_ => CoinCountText.text = _.ToString()).AddTo(this);
-        player.OnGetCoin += GetCoin;
+        enemyCount.Subscribe(_ => EnemyCountText.text = _.ToString()).AddTo(this);
+
+        player.OnGetCoin += AddCoin;
+        player.OnEnemyKill += AddEnemyCount;
         GameStart();
     }
 
     private void GameStart()
     {
         coinCount.Value = 0;
+        enemyCount.Value = 0;
         player.SetCharactorState(CharactorState.Run);
     }
 
     // Update is called once per frame
     void Update()
     {
-        StageRemainingSlider.value = stageLength - player.transform.position.z;
+        StageRemainingSlider.value = player.transform.position.z;
     }
 
-    void GetCoin()
+    void AddCoin()
     {
         coinCount.Value += 1;
+    }
+
+    void AddEnemyCount()
+    {
+        enemyCount.Value += 1;
     }
 }
