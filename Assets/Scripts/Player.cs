@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     Animator animator;
     [SerializeField]
     CharactorState charactorState;
+    [SerializeField]
+    Transform weaponPos;
 
 
     // Start is called before the first frame update
