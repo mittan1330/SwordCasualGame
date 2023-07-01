@@ -30,7 +30,7 @@ public class FogController : MonoBehaviour
     }
 
 
-    void UpdateFogPositions(string tagName)
+    void UpdateFogPositions(string tagName, GameObject other)
     {
         if (tagName != "Player") return;
         var pos = new Vector3(0, 0, step * intervalPosition);
