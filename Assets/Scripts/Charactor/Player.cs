@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     public Action OnEnemyKill;
     public Action OnGameOver;
 
+    bool runCheck = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,8 +50,7 @@ public class Player : MonoBehaviour
         switch (charactorState)
         {
             case CharactorState.Run:
-                // Playerの移動制御
-                mainCharactor.SetAnimation("Run", AnimationType.Bool);
+
 
                 transform.Translate(0, 0, playerForwardSpeed * Time.fixedDeltaTime);
                 var sideMoveSpeed = playerSidewaysSpeed * Time.fixedDeltaTime * joystick.Horizontal;
@@ -63,10 +64,14 @@ public class Player : MonoBehaviour
                 }
                 transform.Translate(sideMoveSpeed, 0, 0);
 
-                // Friendの移動制御
-                friendlyController.SetAnimationForAll("Run", AnimationType.Bool);
-
-
+                if (!runCheck)
+                {
+                    // Playerの移動制御
+                    mainCharactor.SetAnimation("Run", AnimationType.Bool);
+                    // Friendの移動制御
+                    friendlyController.SetAnimationForAll("Run", AnimationType.Bool);
+                    runCheck = true;
+                }
 
                 break;
 
@@ -121,6 +126,7 @@ public class Player : MonoBehaviour
                 OnEnemyKill?.Invoke();
                 yield return new WaitForSeconds(2.0f);
                 charactorState = CharactorState.Run;
+                runCheck = false;
                 break;
             }
 
@@ -137,6 +143,7 @@ public class Player : MonoBehaviour
             int power = other.GetComponent<FriendlyStand>().charactor.Power.Value;
             Destroy(other);
             friendlyController.AddFriend(power);
+            runCheck = false;
         }
         if (tagName == "Enemy")
         {
@@ -144,6 +151,7 @@ public class Player : MonoBehaviour
             attackSequence = true;
             enemyObject = other;
             charactorState = CharactorState.Attack;
+            runCheck = false;
         }
         if(tagName == "Coin")
         {
@@ -155,5 +163,6 @@ public class Player : MonoBehaviour
     public void SetCharactorState(CharactorState state)
     {
         charactorState = state;
+        runCheck = false;
     }
 }
